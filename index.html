@@ -138,77 +138,87 @@ And, of course, you can use a 22-digits Cubic Postcode cube as a #hashtag to tel
 <span style='color:#696969; '># 3) </span><span style='color:#5555dd; '>https://tohtml.com/</span>
 
 <span style='color:#696969; '># cube is the cube number without leading zeros. Enter required value, manually!</span>
-cube <span style='color:#808030; '>=</span> <span style='color:#008c00; '>3141592653589793238462</span><span style='color:#696969; '> # Pi number = 3.1415... Change for whatever you want, 22 digits cube without leading zeros</span>
+<span style='color:#696969; '># cube = 3141592653589793238462 # Pi number = 3.14... Change for whatever you want, 22 digits cube without leading zeros</span>
+<span style='color:#696969; '>#cube = 441000000000100</span>
+<span style='color:#696969; '>#testing and debugging... under construction!</span>
+cube <span style='color:#808030; '>=</span> <span style='color:#008c00; '>882000000000002</span> 
 
-a <span style='color:#808030; '>=</span> <span style='color:#008c00; '>441000000000000</span><span style='color:#696969; '> # a is the number of cubes in one layer. And last cube in first layer</span>
-n_layer <span style='color:#808030; '>=</span> (cube - (cube % a)) / a<span style='color:#696969; '> # n_layer is the layer index number. Simple formula to calculate it</span>
+a <span style='color:#808030; '>=</span> <span style='color:#008c00; '>441000000000000</span> <span style='color:#696969; '># a is the number of cubes in one layer. And last cube in first layer</span>
 
-cube_projection <span style='color:#808030; '>=</span> cube - ((n_layer - <span style='color:#008c00; '>1</span>) * a)<span style='color:#696969; '> # The cube projected on a cube on the first layer</span>
+cube_projection <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>cube <span style='color:#44aadd; '>%</span> a<span style='color:#808030; '>)</span> <span style='color:#696969; '># The cube projected on a cube on the first layer</span>
+half_of_1 <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span><span style='color:#44aadd; '>/</span><span style='color:#008000; '>2.0</span><span style='color:#808030; '>)</span>
+<span style='color:#696969; '>#last_cube_squareference = (2 * n_layer)**2</span>
+n_layer <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>cube_projection <span style='color:#44aadd; '>/</span> <span style='color:#008c00; '>4</span><span style='color:#808030; '>)</span><span style='color:#44aadd; '>**</span>half_of_1 <span style='color:#696969; '>#THIS FORMULA IS WRONG! n_layer is the layer index number. Simple formula to calculate it</span>
+n_layer <span style='color:#808030; '>=</span> <span style='color:#400000; '>int</span><span style='color:#808030; '>(</span>n_layer<span style='color:#808030; '>)</span>
 
 <span style='color:#696969; '># X coordinate on XYZ_earth in first layer is 0.5 meters</span>
-print(<span style='color:#0000e6; '>'n_layer: '</span> <span style='color:#808030; '>,</span> int(n_layer))
-print(<span style='color:#0000e6; '>'cube: '</span> <span style='color:#808030; '>,</span> cube)<span style='color:#696969; '> # The last char in Python2 will be L because it is a long number in Python2</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'n_layer: '</span> <span style='color:#808030; '>,</span> n_layer<span style='color:#808030; '>)</span> <span style='color:#696969; '>#PROBLEM HERE!</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'cube: '</span> <span style='color:#808030; '>,</span> cube<span style='color:#808030; '>)</span> <span style='color:#696969; '># The last char in Python2 will be L because it is a long number in Python2</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'cube_projection: '</span> <span style='color:#808030; '>,</span> cube_projection<span style='color:#808030; '>)</span>
 
-if ((n_layer % 2) !<span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span> ):<span style='color:#696969; '> # if n_layer is odd</span>
-    X_meters <span style='color:#808030; '>=</span> n_layer / <span style='color:#008c00; '>2</span><span style='color:#696969; '> # The XYZ_earth X coordinate in meters if layer is odd</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>n_layer <span style='color:#44aadd; '>%</span> <span style='color:#008c00; '>2</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>!=</span> <span style='color:#008c00; '>0</span> <span style='color:#808030; '>)</span><span style='color:#808030; '>:</span> <span style='color:#696969; '># if n_layer is odd</span>
+    X_meters <span style='color:#808030; '>=</span> n_layer <span style='color:#44aadd; '>/</span> <span style='color:#008c00; '>2</span> <span style='color:#696969; '># The XYZ_earth X coordinate in meters if layer is odd</span>
 
-if ((n_layer % 2) <span style='color:#808030; '>=</span>= <span style='color:#008c00; '>0</span> ):<span style='color:#696969; '> # if n_layer is even    </span>
-    X_meters <span style='color:#808030; '>=</span> (n_layer - <span style='color:#008c00; '>1</span>) / <span style='color:#008c00; '>2</span><span style='color:#696969; '> # The XYZ_earth X coordinate in meters if layer is even</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>n_layer <span style='color:#44aadd; '>%</span> <span style='color:#008c00; '>2</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>==</span> <span style='color:#008c00; '>0</span> <span style='color:#808030; '>)</span><span style='color:#808030; '>:</span> <span style='color:#696969; '># if n_layer is even    </span>
+    X_meters <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>n_layer <span style='color:#44aadd; '>-</span> <span style='color:#008c00; '>1</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>/</span> <span style='color:#008c00; '>2</span> <span style='color:#696969; '># The XYZ_earth X coordinate in meters if layer is even</span>
 
 <span style='color:#696969; '># Projection on first layer and we can calculate Y_meters and Z_meters more easily and quick    </span>
 
 <span style='color:#696969; '># The "Even Squares Integer Sequence" formula lets us calcuate last cube in a squareference: (2n)^2</span>
 <span style='color:#696969; '># Circunference is different than circle. Our neologism means squareference is different than square.</span>
-<span style='color:#696969; '># sqrt_of_cube = cube**(1/2.0) </span>
-last_cube_squareference <span style='color:#808030; '>=</span> cube
-while (((last_cube_squareference / 2) % 2) !<span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span>): 
-    last_cube_squareference +<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+last_cube_squareference <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>2</span> <span style='color:#44aadd; '>*</span> n_layer<span style='color:#808030; '>)</span><span style='color:#44aadd; '>**</span><span style='color:#008c00; '>2</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'last_cube_squareference: '</span> <span style='color:#808030; '>,</span> last_cube_squareference<span style='color:#808030; '>)</span>
+
+<span style='color:#696969; '># Y_meters and Z_meters in the projection on the first layer</span>
+Y_meters <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span><span style='color:#44aadd; '>-</span><span style='color:#808030; '>(</span>n_layer<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008000; '>0.5</span>
+Z_meters <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>n_layer <span style='color:#44aadd; '>-</span> <span style='color:#008000; '>1.5</span><span style='color:#808030; '>)</span> <span style='color:#696969; '># initialization of Z_meters for (cube == last_cube_squareference)</span>
 
 <span style='color:#696969; '># The total number of cubes in each squareference is given by the formula: ((8 * n_layer) - 4)</span>
 <span style='color:#696969; '># Each side in a squareference has (2 * n_layer) cubes</span>
-first_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference - (<span style='color:#008c00; '>8</span> * n_layer) + <span style='color:#008c00; '>5</span><span style='color:#696969; '> #formula for 1st cube in squareference</span>
-right_top_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference - (<span style='color:#008c00; '>6</span> * n_layer) + <span style='color:#008c00; '>4</span><span style='color:#696969; '> #formula for right-top corner cube in squareference</span>
-right_down_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference - (<span style='color:#008c00; '>4</span> * n_layer) + <span style='color:#008c00; '>3</span><span style='color:#696969; '> #formula for right-down corner cube in squareference</span>
-left_down_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference - (<span style='color:#008c00; '>2</span> * n_layer) + <span style='color:#008c00; '>2</span><span style='color:#696969; '> #formula for right-top corner cube in squareference</span>
+first_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference <span style='color:#44aadd; '>-</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>8</span> <span style='color:#44aadd; '>*</span> n_layer<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008c00; '>5</span> <span style='color:#696969; '>#formula for 1st cube in squareference</span>
+right_top_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference <span style='color:#44aadd; '>-</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>6</span> <span style='color:#44aadd; '>*</span> n_layer<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008c00; '>4</span> <span style='color:#696969; '>#formula for right-top corner cube in squareference</span>
+right_down_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference <span style='color:#44aadd; '>-</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>4</span> <span style='color:#44aadd; '>*</span> n_layer<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008c00; '>3</span> <span style='color:#696969; '>#formula for right-down corner cube in squareference</span>
+left_down_cube_squareference <span style='color:#808030; '>=</span> last_cube_squareference <span style='color:#44aadd; '>-</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>2</span> <span style='color:#44aadd; '>*</span> n_layer<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008c00; '>2</span> <span style='color:#696969; '>#formula for right-top corner cube in squareference</span>
 
 <span style='color:#696969; '># Y_meters and Z_meters in the projection on the first layer</span>
-Y_meters <span style='color:#808030; '>=</span> (-(n_layer)) + <span style='color:#008c00; '>0</span>.<span style='color:#008c00; '>5</span>
-Z_meters <span style='color:#808030; '>=</span> (n_layer - <span style='color:#008c00; '>1</span>.<span style='color:#008c00; '>5</span>)<span style='color:#696969; '> # initialization of Z_meters for (cube == last_cube_squareference)</span>
+Y_meters <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span><span style='color:#44aadd; '>-</span><span style='color:#808030; '>(</span>n_layer<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> <span style='color:#008000; '>0.5</span>
+Z_meters <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>n_layer <span style='color:#44aadd; '>-</span> <span style='color:#008000; '>1.5</span><span style='color:#808030; '>)</span> <span style='color:#696969; '># initialization of Z_meters for (cube == last_cube_squareference)</span>
 
 var_cube <span style='color:#808030; '>=</span> last_cube_squareference
 
-if (cube &lt; var_cube):
-    while (var_cube > left_down_cube_squareference):
-        Z_meters -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span> 
-        var_cube -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>cube <span style='color:#44aadd; '>&lt;</span> var_cube<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span>var_cube <span style='color:#44aadd; '>></span> left_down_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+        Z_meters <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span> 
+        var_cube <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
 
-var_cube <span style='color:#808030; '>=</span> left_down_cube_squareference<span style='color:#696969; '> # redundant but put here to make it more explicit</span>
+var_cube <span style='color:#808030; '>=</span> left_down_cube_squareference <span style='color:#696969; '># redundant but put here to make it more explicit</span>
 
-if (cube &lt; left_down_cube_squareference):  
-    while (var_cube > right_down_cube_squareference):
-        Y_meters +<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
-        var_cube -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>cube <span style='color:#44aadd; '>&lt;</span> left_down_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>  
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span>var_cube <span style='color:#44aadd; '>></span> right_down_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+        Y_meters <span style='color:#44aadd; '>+</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+        var_cube <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
 
-var_cube <span style='color:#808030; '>=</span> right_down_cube_squareference<span style='color:#696969; '> # redundant but put here to make it more explicit </span>
+var_cube <span style='color:#808030; '>=</span> right_down_cube_squareference <span style='color:#696969; '># redundant but put here to make it more explicit </span>
 
-if (cube &lt; right_down_cube_squareference):   
-    while (var_cube > right_top_cube_squareference):
-        Z_meters +<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
-        var_cube -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>cube <span style='color:#44aadd; '>&lt;</span> right_down_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>   
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span>var_cube <span style='color:#44aadd; '>></span> right_top_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+        Z_meters <span style='color:#44aadd; '>+</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+        var_cube <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
 
-var_cube <span style='color:#808030; '>=</span> right_top_cube_squareference<span style='color:#696969; '> # redundant but put here to make it more explicit </span>
+var_cube <span style='color:#808030; '>=</span> right_top_cube_squareference <span style='color:#696969; '># redundant but put here to make it more explicit </span>
 
-if (cube &lt; right_top_cube_squareference):   
-    while (var_cube > first_cube_squareference):
-        Y_meters -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
-        var_cube -<span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+<span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>cube <span style='color:#44aadd; '>&lt;</span> right_top_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>   
+    <span style='color:#800000; font-weight:bold; '>while</span> <span style='color:#808030; '>(</span>var_cube <span style='color:#44aadd; '>></span> first_cube_squareference<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+        Y_meters <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
+        var_cube <span style='color:#44aadd; '>-</span><span style='color:#808030; '>=</span> <span style='color:#008c00; '>1</span>
 
-print(<span style='color:#0000e6; '>'X_meters: '</span> <span style='color:#808030; '>,</span> X_meters) 
-print(<span style='color:#0000e6; '>'Y_meters: '</span> <span style='color:#808030; '>,</span> Y_meters)
-print(<span style='color:#0000e6; '>'Z_meters: '</span> <span style='color:#808030; '>,</span> Z_meters)
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'X_meters: '</span> <span style='color:#808030; '>,</span> X_meters<span style='color:#808030; '>)</span> 
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'Y_meters: '</span> <span style='color:#808030; '>,</span> Y_meters<span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#0000e6; '>'Z_meters: '</span> <span style='color:#808030; '>,</span> Z_meters<span style='color:#808030; '>)</span>
 
 <span style='color:#696969; '>#End</span>
 </pre>
+<!--Created using ToHtml.com on 2020-05-27 13:47:31 UTC -->
 							
 						</div>
 					
