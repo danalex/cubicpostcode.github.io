@@ -233,11 +233,110 @@ Z_meters <span style='color:#44aadd; '>+</span><span style='color:#808030; '>=</
 <span style='color:#696969; '># TODO_1: if the cube ends in five or in zero use increments of five</span>
 <span style='color:#696969; '># TODO_2: test if the cube number is even or odd and use increments of two, accordingly</span>
 
-
-<span style='color:#696969; '># Work in progress also with HTML5/JS code to convert GPS &lt;-> XYZ cartesian coordinates in meters.</span>
-<span style='color:#696969; '># At: </span><span style='color:#5555dd; '>https://github.com/cubicpostcode/LLA_ECEF_Conversion</span>
 </pre>
 <!--Created using ToHtml.com on 2020-06-22 14:25:56 UTC -->
+							<br>
+							<pre style='color:#000000;background:#ffffff;'><span style='color:#696969; '># File: LLA_ECEF_Conversion.py</span>
+<span style='color:#696969; '># Date: 23/Jun/2020 </span>
+
+<span style='color:#800000; font-weight:bold; '>from</span> __future__ <span style='color:#800000; font-weight:bold; '>import</span> print_function
+<span style='color:#800000; font-weight:bold; '>import</span> math
+
+RADIUS <span style='color:#808030; '>=</span> <span style='color:#008c00; '>6378137</span>
+FLATTENING_DENOM <span style='color:#808030; '>=</span> <span style='color:#008000; '>298.257223563</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> FLATTENING<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#008c00; '>1</span> <span style='color:#44aadd; '>/</span> FLATTENING_DENOM
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> RADIUS <span style='color:#44aadd; '>*</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span> <span style='color:#44aadd; '>-</span> FLATTENING<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> RADIUS <span style='color:#44aadd; '>*</span> RADIUS
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> POLAR_RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> ECCENTRICITY2<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>2</span> <span style='color:#44aadd; '>-</span> FLATTENING<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> FLATTENING<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> ECCENTRICITY<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> math<span style='color:#808030; '>.</span>sqrt<span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>-</span> POLAR_RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>/</span> RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> ECCENTRICITY_PRIME<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> math<span style='color:#808030; '>.</span>sqrt<span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>-</span> POLAR_RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>/</span> POLAR_RADIUS_SQRT<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>RADIUS<span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>FLATTENING_DENOM<span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>FLATTENING<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> LLAToECEF<span style='color:#808030; '>(</span>lat<span style='color:#808030; '>,</span> lon<span style='color:#808030; '>,</span> alt<span style='color:#808030; '>=</span><span style='color:#008c00; '>0</span><span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>lat<span style='color:#808030; '>,</span> lon<span style='color:#808030; '>,</span> alt<span style='color:#808030; '>)</span>
+    rlat <span style='color:#808030; '>=</span> lat <span style='color:#44aadd; '>/</span> <span style='color:#008c00; '>180</span> <span style='color:#44aadd; '>*</span> math<span style='color:#808030; '>.</span>pi
+    rlon <span style='color:#808030; '>=</span> lon <span style='color:#44aadd; '>/</span> <span style='color:#008c00; '>180</span> <span style='color:#44aadd; '>*</span> math<span style='color:#808030; '>.</span>pi
+
+    slat <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>sin<span style='color:#808030; '>(</span>rlat<span style='color:#808030; '>)</span>
+    clat <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>cos<span style='color:#808030; '>(</span>rlat<span style='color:#808030; '>)</span>
+
+    N <span style='color:#808030; '>=</span> RADIUS <span style='color:#44aadd; '>/</span> math<span style='color:#808030; '>.</span>sqrt<span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span> <span style='color:#44aadd; '>-</span> ECCENTRICITY2<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> slat <span style='color:#44aadd; '>*</span> slat<span style='color:#808030; '>)</span>
+
+    x <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>N <span style='color:#44aadd; '>+</span> alt<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> clat <span style='color:#44aadd; '>*</span> math<span style='color:#808030; '>.</span>cos<span style='color:#808030; '>(</span>rlon<span style='color:#808030; '>)</span>
+    y <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>N <span style='color:#44aadd; '>+</span> alt<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> clat <span style='color:#44aadd; '>*</span> math<span style='color:#808030; '>.</span>sin<span style='color:#808030; '>(</span>rlon<span style='color:#808030; '>)</span>
+    z <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>N <span style='color:#44aadd; '>*</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span> <span style='color:#44aadd; '>-</span> ECCENTRICITY2<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>+</span> alt<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> slat
+
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>[</span>x<span style='color:#808030; '>,</span> y<span style='color:#808030; '>,</span> z<span style='color:#808030; '>]</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> ECEFToLLA<span style='color:#808030; '>(</span>X<span style='color:#808030; '>,</span> Y<span style='color:#808030; '>,</span> Z<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    p <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>sqrt<span style='color:#808030; '>(</span>X <span style='color:#44aadd; '>*</span> X <span style='color:#44aadd; '>+</span> Y <span style='color:#44aadd; '>*</span> Y<span style='color:#808030; '>)</span>
+    theta <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>atan<span style='color:#808030; '>(</span><span style='color:#808030; '>(</span>Z <span style='color:#44aadd; '>*</span> RADIUS<span style='color:#808030; '>)</span> <span style='color:#44aadd; '>/</span> <span style='color:#808030; '>(</span>p <span style='color:#44aadd; '>*</span> POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+
+    sinTheta <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>sin<span style='color:#808030; '>(</span>theta<span style='color:#808030; '>)</span>
+    cosTheta <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>cos<span style='color:#808030; '>(</span>theta<span style='color:#808030; '>)</span>
+
+    num <span style='color:#808030; '>=</span> Z <span style='color:#44aadd; '>+</span> ECCENTRICITY_PRIME<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> ECCENTRICITY_PRIME<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> POLAR_RADIUS<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> sinTheta <span style='color:#44aadd; '>*</span> sinTheta <span style='color:#44aadd; '>*</span> sinTheta
+    denom <span style='color:#808030; '>=</span> p <span style='color:#44aadd; '>-</span> ECCENTRICITY<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> ECCENTRICITY<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> RADIUS <span style='color:#44aadd; '>*</span> cosTheta <span style='color:#44aadd; '>*</span> cosTheta <span style='color:#44aadd; '>*</span> cosTheta
+
+    latitude <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>atan<span style='color:#808030; '>(</span>num <span style='color:#44aadd; '>/</span> denom<span style='color:#808030; '>)</span>
+    longitude <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>atan<span style='color:#808030; '>(</span>Y <span style='color:#44aadd; '>/</span> X<span style='color:#808030; '>)</span>
+    N <span style='color:#808030; '>=</span> getN<span style='color:#808030; '>(</span>latitude<span style='color:#808030; '>)</span>
+    altitude <span style='color:#808030; '>=</span> <span style='color:#808030; '>(</span>p <span style='color:#44aadd; '>/</span> math<span style='color:#808030; '>.</span>cos<span style='color:#808030; '>(</span>latitude<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>-</span> N
+
+    <span style='color:#800000; font-weight:bold; '>if</span> X <span style='color:#44aadd; '>&lt;</span> <span style='color:#008c00; '>0</span> <span style='color:#800000; font-weight:bold; '>and</span> Y <span style='color:#44aadd; '>&lt;</span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>:</span>
+        longitude <span style='color:#808030; '>=</span> longitude <span style='color:#44aadd; '>-</span> math<span style='color:#808030; '>.</span>pi
+
+    <span style='color:#800000; font-weight:bold; '>if</span> X <span style='color:#44aadd; '>&lt;</span> <span style='color:#008c00; '>0</span> <span style='color:#800000; font-weight:bold; '>and</span> Y <span style='color:#44aadd; '>></span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>:</span>
+        longitude <span style='color:#808030; '>=</span> longitude <span style='color:#44aadd; '>+</span> math<span style='color:#808030; '>.</span>pi
+
+    <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>[</span>degrees<span style='color:#808030; '>(</span>latitude<span style='color:#808030; '>)</span><span style='color:#808030; '>,</span> degrees<span style='color:#808030; '>(</span>longitude<span style='color:#808030; '>)</span><span style='color:#808030; '>,</span> altitude<span style='color:#808030; '>]</span>
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> getN<span style='color:#808030; '>(</span>latitude<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    sinlatitude <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>sin<span style='color:#808030; '>(</span>latitude<span style='color:#808030; '>)</span>
+    denom <span style='color:#808030; '>=</span> math<span style='color:#808030; '>.</span>sqrt<span style='color:#808030; '>(</span><span style='color:#008c00; '>1</span> <span style='color:#44aadd; '>-</span> ECCENTRICITY<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> ECCENTRICITY<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#44aadd; '>*</span> sinlatitude <span style='color:#44aadd; '>*</span> sinlatitude<span style='color:#808030; '>)</span>
+    N <span style='color:#808030; '>=</span> RADIUS <span style='color:#44aadd; '>/</span> denom
+    <span style='color:#800000; font-weight:bold; '>return</span> N
+
+
+<span style='color:#800000; font-weight:bold; '>def</span> degrees<span style='color:#808030; '>(</span>angle<span style='color:#808030; '>)</span><span style='color:#808030; '>:</span>
+    <span style='color:#800000; font-weight:bold; '>return</span> angle <span style='color:#44aadd; '>*</span> <span style='color:#808030; '>(</span><span style='color:#008c00; '>180</span> <span style='color:#44aadd; '>/</span> math<span style='color:#808030; '>.</span>pi<span style='color:#808030; '>)</span>
+
+
+<span style='color:#808030; '>[</span>X<span style='color:#808030; '>,</span> Y<span style='color:#808030; '>,</span> Z<span style='color:#808030; '>]</span> <span style='color:#808030; '>=</span> LLAToECEF<span style='color:#808030; '>(</span><span style='color:#008c00; '>10</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>12</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>20</span><span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span><span style='color:#808030; '>[</span>X<span style='color:#808030; '>,</span> Y<span style='color:#808030; '>,</span> Z<span style='color:#808030; '>]</span><span style='color:#808030; '>)</span>
+<span style='color:#800000; font-weight:bold; '>print</span><span style='color:#808030; '>(</span>ECEFToLLA<span style='color:#808030; '>(</span>X<span style='color:#808030; '>,</span> Y<span style='color:#808030; '>,</span> Z<span style='color:#808030; '>)</span><span style='color:#808030; '>)</span>
+</pre>
+<!--Created using ToHtml.com on 2020-06-23 16:25:38 UTC -->
 							
 						</div>
 					
