@@ -200,6 +200,117 @@ print(<span style='color:#0000e6; '>'Z_meters: '</span> <span style='color:#8080
 </pre>
 <!--Created using ToHtml.com on 2020-08-12 00:16:19 UTC -->							
 							<br>
+							<br>
+							
+<pre style='color:#000000;background:#ffffff;'><span style='color:#696969; '># File: xyz2code.py</span>
+<span style='color:#696969; '># Authors: Daniel Alexandre, Vyacheslav V Sokolov</span>
+<span style='color:#696969; '># Date: 14/Aug/2020</span>
+<span style='color:#696969; '># Last Update: 14/Aug/2020 </span>
+
+<span style='color:#800000; font-weight:bold; '>from</span> <span style='color:#800000; font-weight:bold; '>sys</span> import argv
+
+
+def coord_round(x):
+    <span style='color:#0000e6; '>''</span><span style='color:#0000e6; '>'</span>
+    This function transfers the float coordinate to an integer value.
+    
+    It can be replaced <span style='color:#800000; font-weight:bold; '>in</span> <span style='color:#800000; font-weight:bold; '>order</span> to handle the case when a coordinate
+    is integer<span style='color:#808030; '>,</span> i.e. the point is between two cubes <span style='color:#800000; font-weight:bold; '>in</span> some special way.
+
+    The <span style='color:#800000; font-weight:bold; '>default</span> implementation just chops <span style='color:#800000; font-weight:bold; '>out</span> a fractional part of the coordinate
+    <span style='color:#0000e6; '>''</span><span style='color:#0000e6; '>'</span>
+    return int(x) if x ><span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span> else int(x) - <span style='color:#008c00; '>1</span>
+
+
+<span style='color:#696969; '># X, Y, Z are the coordinates of a point in ECEF cooredinate system.</span>
+<span style='color:#696969; '># Porvide them in a command line ('python xyz2code.py [X] [Y] [Z]')</span>
+<span style='color:#696969; '># or change default values here</span>
+if len(argv) <span style='color:#808030; '>=</span>= <span style='color:#008c00; '>4</span>:
+    X <span style='color:#808030; '>=</span> float(argv[<span style='color:#008c00; '>1</span>])
+    Y <span style='color:#808030; '>=</span> float(argv[<span style='color:#008c00; '>2</span>])
+    Z <span style='color:#808030; '>=</span> float(argv[<span style='color:#008c00; '>3</span>])
+else:
+<span style='color:#696969; '>&#xa0;&#xa0;&#xa0;&#xa0;# These values result in the postal code 3141592653589793238462</span>
+<span style='color:#696969; '>&#xa0;&#xa0;&#xa0;&#xa0;# (inspired by the Pi number)</span>
+    X <span style='color:#808030; '>=</span> <span style='color:#008c00; '>3561896</span>.<span style='color:#008c00; '>5</span>
+    Y <span style='color:#808030; '>=</span> -<span style='color:#008c00; '>8402969</span>.<span style='color:#008c00; '>5</span>
+    Z <span style='color:#808030; '>=</span> -<span style='color:#008c00; '>9767161</span>.<span style='color:#008c00; '>5</span>
+
+
+<span style='color:#696969; '># Transfer the float coordinates to integers.</span>
+(x<span style='color:#808030; '>,</span> y<span style='color:#808030; '>,</span> z) <span style='color:#808030; '>=</span> (coord_round(coord) for coord in (X<span style='color:#808030; '>,</span> Y<span style='color:#808030; '>,</span> Z))
+print(<span style='color:#0000e6; '>'x, y, z ='</span><span style='color:#808030; '>,</span> x<span style='color:#808030; '>,</span> y<span style='color:#808030; '>,</span> z)
+
+<span style='color:#696969; '># Let's agree upon some terms:</span>
+<span style='color:#696969; '>#</span>
+<span style='color:#696969; '># Slice - a set of cubes sliced by X. 1st slice is a set of cubes where X in [0, 1);</span>
+<span style='color:#696969; '>#         2nd slice - [-1, 0); 3rd - [1, 2); 4th - [-2, -1) etc. A number of slice is</span>
+<span style='color:#696969; '>#         determined by X coordinate and nothing else. The postal code is ordered by</span>
+<span style='color:#696969; '>#         slice first. Each slice contains 21 million * 21 million = 441000000000000</span>
+<span style='color:#696969; '>#         cubes. In other words, a slice number is a postal code divided by 441000000000000.</span>
+<span style='color:#696969; '># Projection - a projection of a particular slice to slice 1. For example, a projection of</span>
+<span style='color:#696969; '>#              cube 441000000000001 is cube 1; a projection of cube 882000000000123 is cube 123.</span>
+<span style='color:#696969; '>#              In other words, a projection is a remainder of division of postal code</span>
+<span style='color:#696969; '>#              by 441000000000000.</span>
+<span style='color:#696969; '>#              A number of cube in a projection is determined by Y and Z but not X</span>
+<span style='color:#696969; '># Square - a set of cubes in projection that form a particular square of numbers around the</span>
+<span style='color:#696969; '>#          central one. This concept can't be explained in two words, see more detailed</span>
+<span style='color:#696969; '>#          documents about the cubic postcode system. For example, square 1 is cubes 1,2,3,4;</span>
+<span style='color:#696969; '>#          square 2 is cubes 5-16; suare 3 is cubes 17-36 and so on.</span>
+
+<span style='color:#696969; '># First, let's find a square number.</span>
+<span style='color:#696969; '># The square consists of 4 sides: top, left, right and bottom. All the cubes in left and right</span>
+<span style='color:#696969; '># sides have the same Y coordinate (negative on the left side and positive on the right side,</span>
+<span style='color:#696969; '># but the absolute values are the same. So do top and bottom sides, but the coordinate is Z.</span>
+<span style='color:#696969; '># Thus, the square number is just one of the point's coordinates, Y or Z. Which one?</span>
+<span style='color:#696969; '># Obviously: the Y coordinate can't be more than the coordinate of the right side and less than</span>
+<span style='color:#696969; '># the coordinate of the right one; so do Z coordinate, top and bottom sides.</span>
+<span style='color:#696969; '># Thus, the square number is just a maximum of absolute values of Y and Z</span>
+
+square_number <span style='color:#808030; '>=</span> max(y + <span style='color:#008c00; '>1</span><span style='color:#808030; '>,</span> z + <span style='color:#008c00; '>1</span><span style='color:#808030; '>,</span> -y<span style='color:#808030; '>,</span> -z)
+print(<span style='color:#0000e6; '>'square_number ='</span><span style='color:#808030; '>,</span> square_number)
+
+<span style='color:#696969; '># Now we need to calculate the numbers of cubes in the top-left, top-right, bottom-right</span>
+<span style='color:#696969; '># and bottom-left corners of the square we found</span>
+
+left_top <span style='color:#808030; '>=</span> (<span style='color:#008c00; '>2</span> * (square_number - <span style='color:#008c00; '>1</span>)) ** <span style='color:#008c00; '>2</span> + <span style='color:#008c00; '>1</span>
+right_top <span style='color:#808030; '>=</span> left_top + <span style='color:#008c00; '>2</span> * square_number - <span style='color:#008c00; '>1</span>
+right_bottom <span style='color:#808030; '>=</span> right_top + <span style='color:#008c00; '>2</span> * square_number - <span style='color:#008c00; '>1</span>
+left_bottom <span style='color:#808030; '>=</span> right_bottom + <span style='color:#008c00; '>2</span> * square_number - <span style='color:#008c00; '>1</span>
+
+print(<span style='color:#0000e6; '>'corners ='</span><span style='color:#808030; '>,</span> left_top<span style='color:#808030; '>,</span> right_top<span style='color:#808030; '>,</span> right_bottom<span style='color:#808030; '>,</span> left_bottom)
+<span style='color:#696969; '># Now let's find a number of a cube in the projection</span>
+
+if square_number <span style='color:#808030; '>=</span>= - y:<span style='color:#696969; '> # left side</span>
+    if square_number <span style='color:#808030; '>=</span>= z + <span style='color:#008c00; '>1</span>:<span style='color:#696969; '> # top-left corner</span>
+        cube_p <span style='color:#808030; '>=</span> left_top
+    else:
+        cube_p <span style='color:#808030; '>=</span> z + left_bottom + square_number
+elif square_number <span style='color:#808030; '>=</span>= y + <span style='color:#008c00; '>1</span>:<span style='color:#696969; '> # right side</span>
+    cube_p <span style='color:#808030; '>=</span> right_top + square_number - <span style='color:#008c00; '>1</span> - z
+elif square_number <span style='color:#808030; '>=</span>= z + <span style='color:#008c00; '>1</span>:<span style='color:#696969; '> # top side</span>
+    cube_p <span style='color:#808030; '>=</span> right_top <span style='color:#0000e6; '>- square_number -</span> y
+else:<span style='color:#696969; '> # square_number == - z, bottom side</span>
+    cube_p <span style='color:#808030; '>=</span> right_bottom + square_number - y
+
+print(<span style='color:#0000e6; '>'cube_p ='</span><span style='color:#808030; '>,</span> cube_p)
+
+<span style='color:#696969; '># Now let's find a slice number (decreased by 1 - we need the first slice to have a number 0)</span>
+
+if x ><span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span>:
+    slice_number <span style='color:#808030; '>=</span> x * <span style='color:#008c00; '>2</span>
+else:
+    slice_number <span style='color:#808030; '>=</span> -x * <span style='color:#008c00; '>2</span> - <span style='color:#008c00; '>1</span>
+
+<span style='color:#696969; '># Let's join them togetger</span>
+code <span style='color:#808030; '>=</span> slice_number * <span style='color:#008c00; '>441000000000000</span> + cube_p
+
+<span style='color:#696969; '># That's all folks :-)</span>
+print(<span style='color:#0000e6; '>'code ='</span><span style='color:#808030; '>,</span> code)
+</pre>
+<!--Created using ToHtml.com on 2020-08-15 05:22:02 UTC -->
+							<br>
+							<br>
 							<pre style='color:#000000;background:#ffffff;'><span style='color:#696969; '># File: LLA_ECEF_Conversion.py</span>
 <span style='color:#696969; '># Date: 23/Jun/2020 </span>
 <span style='color:#696969; '># Converts between GPS coordinates (Latitude-Longitude-Altitude) and X-Y-Z cartesian coordinates, or vice versa</span>
