@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            window.onload = function() {
+                document.getElementById('calculate').onclick = function() {
+                    
+                    function coord_round(x) {
+                        if (x >= 0)
+                            return parseInt(x)
+                        else
+                            return parseInt(x) - 1
+                    }
+
+
+                    var X = parseFloat(document.getElementById('x').value)
+                    var Y = parseFloat(document.getElementById('y').value)
+                    var Z = parseFloat(document.getElementById('z').value)
+
+
+                    var x = coord_round(X);
+                    var y = coord_round(Y);
+                    var z = coord_round(Z);
+                    
+                    function max(v1, v2, v3) {
+                        let m = v1;
+                        if (v2 > m)
+                            m = v2;
+                        if (v3 > m)
+                            m = v3;
+                        return m;
+                    }
+
+                    var square_number = max(y + 1, z + 1, -y, -z)
+
+                    var left_top = (2 * (square_number - 1)) ** 2 + 1
+                    var right_top = left_top + 2 * square_number - 1
+                    var right_bottom = right_top + 2 * square_number - 1
+                    var left_bottom = right_bottom + 2 * square_number - 1
+
+                    if (square_number == - y) {
+                        if (square_number == z + 1)
+                            cube_p = left_top
+                        else
+                            cube_p = z + left_bottom + square_number
+                    }
+                    else if (square_number == y + 1)
+                        cube_p = right_top + square_number - 1 - z
+                    else if (square_number == z + 1)
+                        cube_p = right_top - square_number - y
+                    else
+                        cube_p = right_bottom + square_number - y
+
+
+                    if (x >= 0)
+                        var slice_number = x * 2
+                    else
+                        var slice_number = -x * 2 - 1
+
+                    var code = slice_number * 441000000000000 + cube_p
+                    
+                    code = code.toPrecision(22) + "";
+                    if (code.includes('.')) {
+                        let foundNonZero = false;
+                        for (let i = code.indexOf('.') + 1; i < code.length; i++) {
+                            if (code[i] != '0')
+                                foundNonZero = true;
+                        }
+                        if (!foundNonZero)
+                            code = code.substring(0, code.indexOf('.'))
+                    }
+                    
+                    document.getElementById('cube-code').innerHTML = "Cube code: " + code
+                    
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <p>Enter X:</p>
+        <input id="x">
+        <p>Enter Y:</p>
+        <input id="y">
+        <p>Enter Z:</p>
+        <input id="z">
+        <br><br>
+        <button id="calculate">Calculate</button>
+        <p id="cube-code">Cube code: </p>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            window.onload = function() {
+                document.getElementById('calculate').onclick = function() {
+                    
+                    var X = parseFloat(document.getElementById('x').value)
+                    var Y = parseFloat(document.getElementById('y').value)
+                    var Z = parseFloat(document.getElementById('z').value)
+                    
+                    var RADIUS = 6378137
+                    var FLATTENING_DENOM = 298.257223563
+                    
+                    function FLATTENING() {
+                        return 1 / FLATTENING_DENOM
+                    }
+
+                    function POLAR_RADIUS() {
+                        return RADIUS * (1 - FLATTENING())
+                    }
+
+                    function RADIUS_SQRT() {
+                        return RADIUS * RADIUS
+                    }
+
+                    function POLAR_RADIUS_SQRT() {
+                        return POLAR_RADIUS() * POLAR_RADIUS()
+                    }
+
+                    function ECCENTRICITY2() {
+                        return (2 - FLATTENING()) * FLATTENING()
+                    }
+
+                    function ECCENTRICITY() {
+                        return Math.sqrt((RADIUS_SQRT() - POLAR_RADIUS_SQRT()) / RADIUS_SQRT())
+                    }
+
+                    function ECCENTRICITY_PRIME() {
+                        return Math.sqrt((RADIUS_SQRT() - POLAR_RADIUS_SQRT()) / POLAR_RADIUS_SQRT())
+                    }
+
+                    function ECEFToLLA(X, Y, Z) {
+                        var p = Math.sqrt(X * X + Y * Y)
+                        var theta = Math.atan((Z * RADIUS) / (p * POLAR_RADIUS()))
+
+                        var sinTheta = Math.sin(theta)
+                        var cosTheta = Math.cos(theta)
+
+                        var num = Z + ECCENTRICITY_PRIME() * ECCENTRICITY_PRIME() * POLAR_RADIUS() * sinTheta * sinTheta * sinTheta
+                        var denom = p - ECCENTRICITY() * ECCENTRICITY() * RADIUS * cosTheta * cosTheta * cosTheta
+
+                        var latitude = Math.atan(num / denom)
+                        var longitude = Math.atan(Y / X)
+                        var N = getN(latitude)
+                        var altitude = (p / Math.cos(latitude)) - N
+
+                        if (X < 0 && Y < 0)
+                            longitude = longitude - Math.PI
+
+                        if (X < 0 && Y > 0)
+                            longitude = longitude + Math.PI
+
+                        return [degrees(latitude), degrees(longitude), altitude]
+                        
+                    }
+
+                    function getN(latitude) {
+                        var sinlatitude = Math.sin(latitude)
+                        var denom = Math.sqrt(1 - ECCENTRICITY() * ECCENTRICITY() * sinlatitude * sinlatitude)
+                        var N = RADIUS / denom
+                        return N
+                    }
+
+                    function degrees(angle) {
+                        return angle * (180 / Math.PI)
+                    }
+                    
+                    var res = ECEFToLLA(X, Y, Z);
+                    
+                    document.getElementById('latitude').innerHTML = "Latitude: " + res[0];
+                    document.getElementById('longitude').innerHTML = "Longitude: " + res[1];
+                    document.getElementById('altitude').innerHTML = "Altitude: " + res[2];
+                    
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <p>Enter X:</p>
+        <input id="x">
+        <p>Enter Y:</p>
+        <input id="y">
+        <p>Enter Z:</p>
+        <input id="z">
+        <br><br>
+        <button id="calculate">Calculate</button>
+        <p id="latitude">Latitude: </p>
+        <p id="longitude">Longitude: </p>
+        <p id="altitude">Altitude: </p>
+    </body>
+</html>
