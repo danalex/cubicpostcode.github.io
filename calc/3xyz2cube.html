@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title></title>
+    <style>
+        body{
+            background-color:#f4f4f4;
+        }
+        .card{
+            box-shadow: 0 0 10px #0000002b;
+        }
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+    </style>
+  </head>
+  <body>
+      
+    <div class="container py-5">
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <h4 class="col-12 font-weight-bold" >Enter to calculate algarisms cube code: </h4>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="col-lg-6 col-md-8">
+                                <div class="form-group row no-gutters">
+                                    <label class="col-sm-4 col col-form-label">Enter X: </label>
+                                    <div class="col-sm-8">
+                                        <input id="x" type="number" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="form-group row no-gutters">
+                                    <label class="col-sm-4 col col-form-label">Enter Y: </label>
+                                    <div class="col-sm-8">
+                                        <input id="y" type="number" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="form-group row no-gutters">
+                                    <label class="col-sm-4 col col-form-label">Enter Z: </label>
+                                    <div class="col-sm-8">
+                                        <input id="z" type="number" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="form-group row no-gutters">
+                                    <div class="col-sm-4 col col-form-label">&nbsp;</div>
+                                    <div class="col-sm-8">                                        
+                                        <button id="calculate" type="button" class="btn btn-success">Calculate</button>
+                                    </div>
+                                </div>
+
+                                <hr>
+                            </div>
+                        </div>                         
+                                                 
+                        <p style="font-size: 18px;"><strong>Cube code:</strong> <span id="cube-code"></span></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        window.onload = function() {
+            document.getElementById('calculate').onclick = function() {
+                
+                function coord_round(x) {
+                    if (x >= 0)
+                        return parseInt(x)
+                    else
+                        return parseInt(x) - 1
+                }
+
+
+                var X = parseFloat(document.getElementById('x').value)
+                var Y = parseFloat(document.getElementById('y').value)
+                var Z = parseFloat(document.getElementById('z').value)
+
+
+                var x = coord_round(X);
+                var y = coord_round(Y);
+                var z = coord_round(Z);
+                
+                function max(v1, v2, v3) {
+                    let m = v1;
+                    if (v2 > m)
+                        m = v2;
+                    if (v3 > m)
+                        m = v3;
+                    return m;
+                }
+
+                var square_number = max(y + 1, z + 1, -y, -z)
+
+                var left_top = (2 * (square_number - 1)) ** 2 + 1
+                var right_top = left_top + 2 * square_number - 1
+                var right_bottom = right_top + 2 * square_number - 1
+                var left_bottom = right_bottom + 2 * square_number - 1
+
+                if (square_number == - y) {
+                    if (square_number == z + 1)
+                        cube_p = left_top
+                    else
+                        cube_p = z + left_bottom + square_number
+                }
+                else if (square_number == y + 1)
+                    cube_p = right_top + square_number - 1 - z
+                else if (square_number == z + 1)
+                    cube_p = right_top - square_number - y
+                else
+                    cube_p = right_bottom + square_number - y
+
+
+                if (x >= 0)
+                    var slice_number = x * 2
+                else
+                    var slice_number = -x * 2 - 1
+
+                var code = slice_number * 441000000000000 + cube_p
+                
+                code = code.toPrecision(22) + "";
+                if (code.includes('.')) {
+                    let foundNonZero = false;
+                    for (let i = code.indexOf('.') + 1; i < code.length; i++) {
+                        if (code[i] != '0')
+                            foundNonZero = true;
+                    }
+                    if (!foundNonZero)
+                        code = code.substring(0, code.indexOf('.'))
+                }
+                
+                document.getElementById('cube-code').innerHTML = code;
+                
+            }
+        }
+    </script>
+  </body>
+</html>
