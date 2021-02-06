@@ -127,20 +127,14 @@
                 else
                     var slice_number = -x * 2 - 1
 
-                var code = slice_number * 441000000000000 + cube_p
-                
-                code = code.toPrecision(22) + "";
-                if (code.includes('.')) {
-                    let foundNonZero = false;
-                    for (let i = code.indexOf('.') + 1; i < code.length; i++) {
-                        if (code[i] != '0')
-                            foundNonZero = true;
-                    }
-                    if (!foundNonZero)
-                        code = code.substring(0, code.indexOf('.'))
-                }
-                
-                document.getElementById('cube-code').innerHTML = code;
+            function pad(x, n) {
+                var s = "000000000000" + x;
+                return s.substr(s.length - n);
+            }
+            var c1 = pad(parseInt(slice_number * 441 + cube_p * 1e-12), 10)
+            var c2 = pad(cube_p % 1e12, 12)
+            var code = c1 + "" + c2
+            document.getElementById('cube-code').innerHTML = code;
                 
             }
         }
