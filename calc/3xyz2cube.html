@@ -101,6 +101,8 @@
                 var y = coord_round(Y);
                 var z = coord_round(Z);
                 
+                /* JUNK
+              
                 function max(v1, v2, v3) {
                     let m = v1;
                     if (v2 > m)
@@ -109,8 +111,9 @@
                         m = v3;
                     return m;
                 }
-
-                var square_number = max(y + 1, z + 1, -y, -z)
+                */
+              
+                var square_number = Math.max(y + 1, z + 1, -y, -z)
 
                 var left_top = (2 * (square_number - 1)) ** 2 + 1
                 var right_top = left_top + 2 * square_number - 1
